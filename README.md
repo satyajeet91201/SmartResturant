@@ -6,3 +6,5 @@ Currently, two official plugins are available:
 
 - [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
 - [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+
+Figma Link: https://www.figma.com/design/Ebas45Q3z99eopDY8ktMxm/Untitled?node-id=0-1&t=sqAXnEhbftweD1HP-1
