@@ -26,7 +26,8 @@
   border: 5px solid gray;
   border-radius: 5px;
   padding: 10px;
-  background-color: #333;
+  background-color: #d4c6c6;
+  overflow-y: auto; /* Add vertical scrollbars */
 }
 .card-subtitle{
   margin-top: 10px;
@@ -79,6 +80,11 @@
   background-color: #2980b9;
 }
 
+.add-order-input{
+  width: 95%;
+  margin-bottom: 1px;
+  margin-left: 8px;
+}
 .text{
   font-family: monospace;
   font-size: 20px;
@@ -95,12 +101,13 @@
 
 body {
   font-family: 'Poppins', sans-serif;
-  background-color: #222;
+  background-color: #3a3838;
   color: #fff;
   overflow-x: hidden; /* Hide horizontal overflow */
 }
 
 /* Navbar styling */
+/* General Styles */
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -161,21 +168,15 @@ body {
 }
 
 .icon.bell {
-  color: #f39c12; /* Bell icon color */
+  color: #f39c12;
 }
 
 .icon.profile {
-  color: #3498db; /* Profile icon color */
+  color: #3498db;
 }
 
-.icon.bell:hover {
-  background-color: #555;
-  max-width: 350px;
-  border-radius: 5px;
-}
-
-.icon.profile:hover {
-  background-color: #555;
+.icon.bell:hover, .icon.profile:hover {
+  background-color: #0cedf5;
   max-width: 350px;
   border-radius: 5px;
 }
@@ -184,6 +185,68 @@ body {
   height: 40px;
   width: 40px;
   margin: 10px;
+}
+
+/* Tablet-specific styles */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10px;
+  }
+
+  .navbar-left {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .logo {
+    font-size: 1.2rem;
+  }
+
+  .navbar-right {
+    width: 100%;
+    display: none; /* Hide the links initially on smaller screens */
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: 10px;
+  }
+
+  .icons {
+    margin-left: auto;
+    display: flex;
+  }
+
+  .hamburger-menu {
+    display: block;
+    cursor: pointer;
+    font-size: 2rem;
+    margin-left: auto;
+  }
+
+  /* Show navbar links when the hamburger is clicked */
+  .navbar-right.open {
+    display: flex;
+  }
+
+  .nav-links {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .nav-links li {
+    margin: 10px 0;
+  }
+
+  .apple2 {
+    height: 30px;
+    width: 30px;
+  }
+
+  .icon {
+    font-size: 1.5rem;
+  }
 }
 
 /* Component styling */
@@ -251,7 +314,6 @@ body {
 .card2-details {
   overflow-y: auto; /* Add vertical scrollbar */
   max-height: 400px; /* Adjust as needed */
-  border: 5px solid gray; /* Ensure border is visible */
   border-radius: 5px;
   padding: 10px;
 }
@@ -262,9 +324,10 @@ body {
   gap: 10px; /* Adjust gap between items */
   overflow-y: auto; /* Add vertical scrollbar */
   max-height: 300px; /* Limit max height for scrollbar */
-  padding: 10px;
+  padding: 5px;
   margin-right: -10px;
   box-sizing: border-box;
+  opacity: 1.5;
 }
 
 .customer-item {
@@ -309,15 +372,14 @@ body {
 }
 
 .card {
-  border: 5px solid rgb(233, 228, 228);
-  background-color: #222;
+  background-color: #413e3e;
   color: #fff;
-  height: 387px;
+  max-height: 450px;
   width: 400px;
-  overflow: hidden; /* hides overflowed content */
+  overflow-y: auto;
   white-space: nowrap; /* keeps text in a single line */
   border: 1px solid black; /* optional: to visualize the container */
-  position: relative; 
+   
 }
 
 .text {
@@ -378,7 +440,7 @@ body {
   margin-top: 33px;
   margin-bottom: 20px;
   border-radius: 5px;
-  max-height: 400px;
+  min-height: 450px;
 }
 
 /* Phones (576px and below) */
@@ -405,7 +467,7 @@ body {
   }
 
   .navbar, .customer-grid {
-    overflow-x: hidden; /* Hide horizontal overflow on smaller screens */
+    overflow-x:visible; /* Hide horizontal overflow on smaller screens */
   }
 }
 
@@ -423,13 +485,13 @@ body {
 
 /* Form and card adjustments */
 .card-form {
-  border: 5px solid gray;
-  height: 896px;
+  border: 5px solid rgb(223, 217, 217);
+  height: 816px;
   width: 625px;
   right: 20px;
-  top: 10px;
+  top: -200px;
   left: -36px;
-  padding: 10px;
+  padding: 5px;
   border-radius: 5px;
   font-family: sans-serif;
 }
@@ -491,6 +553,33 @@ body {
   padding-bottom: 1.5px;
 }
 
+.profile-container {
+  position: relative;
+}
+
+.profile-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+}
+
+.arrival-time {
+  position: absolute;
+  top: -5px;
+  right: -6px;
+  padding: 6px 6px;
+  font-size: 15px;
+  color: white;
+  border-radius: 50%;
+  width: 26px;
+  height: 29px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+
+
 @keyframes shake {
   0% { transform: translateX(0); }
   25% { transform: translateX(-10px); }
@@ -500,4 +589,5 @@ body {
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
 
