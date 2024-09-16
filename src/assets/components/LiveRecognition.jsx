@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import { FcApproval, FcHighPriority } from 'react-icons/fc';
-import { CgProfile } from 'react-icons/cg';
 import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../../context/AppContext';
 import Card2 from './Card2';
@@ -9,43 +8,55 @@ import Details from './Details';
 
 const LiveRecognition = ({ state, setState }) => {
   const [selectedCustomer, setSelectedCustomer] = useState(null);
-
-  // Sample data for new customers
-  const [newCustomers, setNewCustomers] = useState([
-    { id: 9, name: 'Customer 1', orders: [], specialOccasion: null },
-    { id: 10, name: 'Customer 2', orders: [], specialOccasion: null },
-    { id: 11, name: 'Customer 3', orders: [], specialOccasion: null },
-    { id: 12, name: 'Customer 4', orders: [], specialOccasion: null },
-    { id: 13, name: 'Customer 9', orders: [], specialOccasion: null },
-    { id: 14, name: 'Customer 10', orders: [], specialOccasion: null },
-    { id: 15, name: 'Customer 11', orders: [], specialOccasion: null },
-    { id: 16, name: 'Customer 12', orders: [], specialOccasion: null },
-    { id: 12, name: 'Customer 4', orders: [], specialOccasion: null },
-    { id: 13, name: 'Customer 9', orders: [], specialOccasion: null },
-    { id: 14, name: 'Customer 10', orders: [], specialOccasion: null },
-    { id: 15, name: 'Customer 11', orders: [], specialOccasion: null },
-    { id: 16, name: 'Customer 12', orders: [], specialOccasion: null },
-  ]);
-
   const { recognizedCustomers, addCustomerToRecognized } = useAppContext();
   const navigate = useNavigate();
 
-  // Handle click on customer item
+  // Timer for each recognized customer
+  const [arrivalTimes, setArrivalTimes] = useState({});
+
+  // Increment each customer's time every minute
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setArrivalTimes((prevTimes) => {
+        const updatedTimes = { ...prevTimes };
+        Object.keys(updatedTimes).forEach((customerId) => {
+          updatedTimes[customerId] += 1; // Increment time by 1 minute
+        });
+        return updatedTimes;
+      });
+    }, 60000); // Update every 1 minute
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // Function to handle form submission for new customer
+  const handleFormSubmission = (newCustomer) => {
+    addCustomerToRecognized(newCustomer);
+
+    // Initialize the timer for the new customer to 0 minutes
+    setArrivalTimes((prev) => ({ ...prev, [newCustomer.id]: 0 }));
+
+    setSelectedCustomer(null);
+  };
+
+  // Sample data for new customers
+  const [newCustomers, setNewCustomers] = useState([
+    { id: 1, name: 'Customer 1', image: 'https://randomuser.me/api/portraits/men/1.jpg' },
+    { id: 2, name: 'Customer 2', image: 'https://randomuser.me/api/portraits/women/2.jpg' },
+    { id: 3, name: 'Customer 3', image: 'https://randomuser.me/api/portraits/men/3.jpg' },
+    { id: 4, name: 'Customer 4', image: 'https://randomuser.me/api/portraits/men/4.jpg' },
+    { id: 5, name: 'Customer 5', image: 'https://randomuser.me/api/portraits/men/5.jpg' },
+    { id: 6, name: 'Customer 6', image: 'https://randomuser.me/api/portraits/men/6.jpg' },
+    { id: 7, name: 'Customer 7', image: 'https://randomuser.me/api/portraits/men/7.jpg' },
+  ]);
+
   const handleCustomerClick = (customer) => {
     navigate('/form', { state: { customer } });
   };
 
-  // Handle form submission to add a new customer
-  const handleFormSubmission = (newCustomer) => {
-    addCustomerToRecognized(newCustomer);
-
-    // Remove the customer from newCustomers list
-    setNewCustomers((prevCustomers) =>
-      prevCustomers.filter((customer) => customer.id !== newCustomer.id)
-    );
-
-    // Clear selected customer after adding to recognized customers
-    setSelectedCustomer(null);
+  // Function to determine the timer color based on time
+  const getTimerColor = (time) => {
+    return time >= 10 ? 'red' : 'green'; // Red if time >= 10 mins, green otherwise
   };
 
   return (
@@ -67,7 +78,23 @@ const LiveRecognition = ({ state, setState }) => {
                     setState('details');
                   }}
                 >
-                  <CgProfile size={50} className="profile-icon" />
+                  <div className="profile-container">
+                    {/* Display the correct image */}
+                    <img
+                      src={customer.image || 'https://randomuser.me/api/portraits/men/1.jpg'} // Fallback image
+                      alt={customer.name}
+                      className="profile-icon"
+                    />
+                    {/* Timer showing time passed */}
+                    <div
+                      className="arrival-time"
+                      style={{
+                        backgroundColor: getTimerColor(arrivalTimes[customer.id]),
+                      }}
+                    >
+                      {arrivalTimes[customer.id] || 0} 
+                    </div>
+                  </div>
                   <span className="customer-name">{customer.name}</span>
                 </div>
               ))}
@@ -88,7 +115,14 @@ const LiveRecognition = ({ state, setState }) => {
                   className="customer-item"
                   onClick={() => handleCustomerClick(customer)}
                 >
-                  <CgProfile size={50} className="profile-icon" />
+                  <div className="profile-container">
+                    {/* Display the correct image */}
+                    <img
+                      src={customer.image}
+                      alt={customer.name}
+                      className="profile-icon"
+                    />
+                  </div>
                   <span className="customer-name">{customer.name}</span>
                 </div>
               ))}
@@ -98,12 +132,12 @@ const LiveRecognition = ({ state, setState }) => {
 
         {/* Details/Card Section */}
         <Col md={4}>
-        <div className='bor'>
-          {state === 'details' && selectedCustomer ? (
-            <Details customer={selectedCustomer} onClose={() => setState('Card2')} />
-          ) : (
-            <Card2 />
-          )}
+          <div className="bor">
+            {state === 'details' && selectedCustomer ? (
+              <Details customer={selectedCustomer} onClose={() => setState('Card2')} />
+            ) : (
+              <Card2 />
+            )}
           </div>
         </Col>
       </Row>
